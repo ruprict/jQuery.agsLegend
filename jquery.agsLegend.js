@@ -22,22 +22,27 @@
 				 		$.each(lay.layerInfos, function(ind, lInfo){
 				 			
 				 			if (lInfo.name.replace(/\s/g,"_")==nm){
-				 				var vis	= lay.visibleLayers;
-				 				if (visible & vis.indexOf(ind)==-1){
-				 					vis.push(ind);
-				 				} 
-				 				else if (!visible & vis.indexOf(ind)>-1)
-				 				{
-				 					vis = $.grep(vis, function(n){
-				 						return n != ind;
-				 								
-			 						});
+				 				if (lay.tileInfo){
+				 					lay.setVisibility(visible);
+				 				}else {
+					 				var vis	= lay.visibleLayers;
+					 				if (visible & vis.indexOf(ind)==-1){
+					 					vis.push(ind);
+					 				} 
+					 				else if (!visible & vis.indexOf(ind)>-1)
+					 				{
+					 					vis = $.grep(vis, function(n){
+					 						return n != ind;
+					 								
+				 						});
+					 				}
+					 				
+					 				lay.setVisibleLayers(vis);
 				 				}
-				 				
-				 				lay.setVisibleLayers(vis);
 			 				}
 				 			
 			 			});
+			 			
 			 		});					
 					
 				});
