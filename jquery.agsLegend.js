@@ -1,7 +1,6 @@
 (function($){
 	//Encapsulate our methods
 	
-		
 		var methods = {
 			init: function(options){
 				map = options.map
