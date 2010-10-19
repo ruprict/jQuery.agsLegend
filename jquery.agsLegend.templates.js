@@ -1,5 +1,5 @@
 <script type="text/x-jquery-tmpl" id="layerTemplate" >
-		<li style="float:left">
+		<li style="float:left;width:100%">
 			<input type="checkbox" style="float:left" id="${$item.getCheckboxID()}" checked="${$item.getChecked()}" />
 			<h3 class="agsLegendOpen" style="margin:0 0 0 25px;padding:0;" >${name}</h3>
 			{{if drawingInfo.renderer.type=="simple"}}
@@ -16,10 +16,12 @@
 						<span style="padding:0px 5px 0px 5px;display:table-cell;vertical-align:middle;" >${name}</span>
 					</div>
 				{{else drawingInfo.renderer.symbol.type=='esriSMS'}}
+					<div>
 					{{if drawingInfo.renderer.symbol.style=="esriSMSCircle"}}
 						{{html $item.drawCircle()}}
-						<div style="clear:both"></div>
 					{{/if}}
+					</div>
+					<div style="clear:both"></div>
 				{{/if}}
 				
 			{{else drawingInfo.renderer.type=='uniqueValue'}}
