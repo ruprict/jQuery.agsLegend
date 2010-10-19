@@ -5,7 +5,7 @@
 		var methods = {
 			init: function(options){
 				map = options.map
-				//methods.makeCollapsible();
+				methods.makeCollapsible($(this));
 				//Stupid IE
 				methods.checkIndexOf();
 				$.extend(options,$.fn.agsLegend.defaults);
@@ -62,8 +62,11 @@
 				});
 				return this;
 			},
-			makeCollapsible:function(){
-				
+			makeCollapsible:function(wid){
+				$(">li>h3", wid).live("click",function(){
+					$(this).next().slideToggle('slow');
+					$(this).toggleClass("agsLegendOpen").toggleClass("agsLegendClosed");
+				});
 			},
 			checkIndexOf:function(){
 				if (!Array.indexOf) {
@@ -80,8 +83,11 @@
 			addLayer:function(layer){
 				var $this = $(this)
 				var layerInd= layer.layerIndex;
+				if (layer.id=="layer0")
+					return;
 				$.getJSON(layer.url+"/layers?f=json&callback=?",
 					function(data){
+						
 						$("#layerTemplate").tmpl(data.layers,
 							{
 								

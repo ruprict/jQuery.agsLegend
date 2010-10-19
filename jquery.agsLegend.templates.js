@@ -1,6 +1,6 @@
 	<script type="text/x-jquery-tmpl" id="layerTemplate" >
 			<li><input type="checkbox" style="float:left" id="${$item.getCheckboxID()}" checked="${$item.getChecked()}" />
-			<h3 style="margin:0 0 0 25px;padding:0;" >${name}</h3>
+			<h3 style="margin:0 0 0 25px;padding:0;" >${name}<img src="jQuery.agsLegend/collapsible_arrow.png"/></h3>
 			{{if drawingInfo.renderer.type=="simple"}}
 				
 				{{if drawingInfo.renderer.symbol.type=='esriPMS'}}
@@ -50,4 +50,5 @@
 				</ul>
 			{{/if}}
 			</li>
+			<div style="clear:both"/>
 	</script>
