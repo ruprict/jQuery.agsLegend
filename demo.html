@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>I am Legend</title>
+		<style type="text/css">
+			html, body { height: 98%; width: 98%; margin: 0; padding: 5px; }
+			ul{
+				list-style-type:none;
+			}
+			#content{
+				margin-left:20%;
+				height:100%;
+			}
+			#navbar{
+				float:left;
+				width:20%;
+			}
+			h3.agsLegendClosed{
+				background-image:url("collapsible_arrow.png");
+				background-repeat: no-repeat;
+				background-position: 70% center;
+				
+			}
+			h3.agsLegendOpen{
+				
+				background-image:url("collapsible_arrow_down.png");
+				background-repeat: no-repeat;
+				background-position: 70% center;
+			}
+			</style>
+			
+			 <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.1/js/dojo/dijit/themes/claro/claro.css"> 
+			<script type="text/x-jquery-tmpl" id="layerTemplate">
+			<li><input type="checkbox" style="float:left" id="${$item.getCheckboxID()}" checked="${$item.getChecked()}" />
+			<h3 class="agsLegendOpen" style="margin:0 0 0 25px;padding:0;" >${name} </h3>
+			{{if drawingInfo.renderer.type=="simple"}}
+				
+				{{if drawingInfo.renderer.symbol.type=='esriPMS'}}
+					<div style="display:table; margin:10px 5px;" >
+					<img  style="padding-right:10px;float:left;display:inline-block;vertical-align:middle;"src="data:${drawingInfo.renderer.symbol.contentType};base64,${drawingInfo.renderer.symbol.imageData}"/>
+					<span style="padding:0px 5px 0px 5px;display:table-cell;vertical-align:middle;">${name}</span>
+					</div>
+					
+				{{else drawingInfo.renderer.symbol.type=='esriSFS'}}
+					<div style="display:table;" >
+					
+					<div style="display:table-cell;width:25px;height:25px;background-color:${$item.getColor(drawingInfo.renderer.symbol.color)};border:${$item.getBorder(drawingInfo.renderer.symbol.outline)};"></div>
+					<span style="padding:0px 5px 0px 5px;display:table-cell;vertical-align:middle;" >${name}</span>
+					</div>
+				{{else drawingInfo.renderer.symbol.type=='esriSMS'}}
+					{{if drawingInfo.renderer.symbol.style=="esriSMSCircle"}}
+						{{html $item.drawCircle()}}
+						<div style="clear:both"></div>
+					{{/if}}
+				{{/if}}
+				
+			{{else drawingInfo.renderer.type=='uniqueValue'}}
+				
+				<ul>
+				{{each drawingInfo.renderer.uniqueValueInfos}}
+					
+					{{if $value.symbol.type=='esriPMS'}}
+						<div style="display:table;margin:10px 5px;">
+						
+						<img src="data:${$value.symbol.contentType};base64,${$value.symbol.imageData}" style="vertical-align:middle;"/>
+						<span style="padding:0px 5px 0px 0px;display:table-cell;vertical-align:middle;">${$value.label}</span>
+						
+						</div>
+					{{else $value.symbol.type=='esriSFS'}}
+						<li style="display:table; margin:10px 5px;" >
+							
+							<div style="display:table-cell;vertical-align:middle;width:25px;height:25px;background:${$item.getColor($value.symbol.color)};border:${$item.getBorder($value.symbol.outline)};" ></div>
+							<span style="padding:0px 5px 0px 5px;display:table-cell;vertical-align:middle;">${$value.label}</span>
+						</li>
+					{{else $value.symbol.type=='esriSLS'}}
+						<li style="display:table;" >
+							
+							<div style="margin:8px 5px -15px 5px;;width:25px;height:${$value.symbol.width}px;background:${$item.getColor($value.symbol.color)};"></div>
+							<span style="padding:0px 5px 0px 5px;display:table-cell;vertical-align:middle;">${$value.label}</span>
+						</li>
+					{{/if}}
+				{{/each}}
+				</ul>
+			{{/if}}
+			</li>
+			<div style="clear:both"/>
+			</script>
+	</head>
+	<body class="claro">
+		<div id="container">
+			<div id="navbar"> 
+				<ul id="toc"></ul>
+			</div>
+			<div id="content"></div>
+		</div>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+		<script src="lib/jquery.tmpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="lib/raphael-min.js" type="text/javascript" charset="utf-8"></script>
+		<!-- ArcGIS API for JavaScript -->
+		<script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.0compact"></script>
+		<script src="jquery.agsLegend.js" type="text/javascript" charset="utf-8"></script> 
+		
+		<script defer>
+				var map, bsemapUrl, url1, url2, url3, legend;
+				basemapUrl = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
+				url1 = 'http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Hydrography/Watershed173811/MapServer';
+				url2="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Fire/Sheep/MapServer";
+		 		url3="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Earthquakes/EarthquakesFromLastSevenDays/MapServer";
+				dojo.addOnLoad(function(){
+					 var initialExtent = new esri.geometry.Extent({"xmin":-10753431.069899248,"ymin":4624151.391548632,"xmax":-10737799.697614951,"ymax":4635884.47539039,"spatialReference":{"wkid":102100}});
+					map = new esri.Map("content", {extent:initialExtent});
+					legend = new $("#toc").agsLegend({map:map});
+					
+					map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(basemapUrl));
+					map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url1));
+					
+				});
+			</script>
+		
+	</body>
+</html>
