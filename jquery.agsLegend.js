@@ -5,14 +5,19 @@
 		var methods = {
 			init: function(options){
 				map = options.map
-				
+				//methods.makeCollapsible();
+				//Stupid IE
+				methods.checkIndexOf();
 				$.extend(options,$.fn.agsLegend.defaults);
 				//This is probably bad, but I only want one widget
 				this.layerAddListener = dojo.connect(map,'onLayerAdd', dojo.hitch(this,methods.addLayer));
 				 $(this).delegate("input[type='checkbox']", "click",function(ev){
+				 	
+					// We'll find the layer based on the name, so capture it
 				 	var nm = /([a-zA-Z0-9_]*)_toggle/.exec(this.id)[1];
 				 	var visible = $(this).attr("checked");
-				 
+				 	
+				 	// Loop over each layer, and get to work
 				 	$.each(map.layerIds, function(ind, layId){
 				 		//TODO: check options.ignoreBaseMaps
 				 		if (layId=="layer0")
@@ -23,8 +28,10 @@
 				 			
 				 			if (lInfo.name.replace(/\s/g,"_")==nm){
 				 				if (lay.tileInfo){
+				 					// We have a tiled layer
 				 					lay.setVisibility(visible);
 				 				}else {
+				 					// We have a dynamic layer
 					 				var vis	= lay.visibleLayers;
 					 				if (visible & vis.indexOf(ind)==-1){
 					 					vis.push(ind);
@@ -36,8 +43,15 @@
 					 								
 				 						});
 					 				}
-					 				
-					 				lay.setVisibleLayers(vis);
+					 				// I get an error if you try to set the visiblity
+					 				// of dynamic layer with an empty array, so, um, don't
+					 				if (vis.length>0){
+					 					lay.setVisibility(true);
+					 					lay.setVisibleLayers(vis);
+					 						
+				 					}
+					 				else
+					 					lay.setVisibility(false);
 				 				}
 			 				}
 				 			
@@ -47,6 +61,21 @@
 					
 				});
 				return this;
+			},
+			makeCollapsible:function(){
+				
+			},
+			checkIndexOf:function(){
+				if (!Array.indexOf) {
+				  Array.prototype.indexOf = function (obj, start) {
+				    for (var i = (start || 0); i < this.length; i++) {
+				      if (this[i] == obj) {
+				        return i;
+				      }
+				    }
+				    return -1;
+				  }
+				}	
 			},
 			addLayer:function(layer){
 				var $this = $(this)
@@ -59,9 +88,9 @@
 								drawCircle: function(){
 									var sym=this.data.drawingInfo.renderer.symbol;
 									var col = sym.color;
-									var li = $('<li><input type="checkbox"/><span id="label_'+this.data.name+'">'+this.data.name+'</span><div id="symbol_'+this.data.name+'"></div> </li>').attr("id",this.data.name).appendTo("#toc");
+									var li = $('<li><div style="float:left" id="symbol_'+this.data.name+'"></div><span id="label_'+this.data.name+'">'+this.data.name+'</span></li>').attr("id",this.data.name).appendTo("#toc");
 									var size = sym.size+10 ;
-									var paper = Raphael('symbol_'+this.data.name,100, size);
+									var paper = Raphael('symbol_'+this.data.name,30, size);
 									var c =paper.circle(20,size/2,size-10);
 									var fill = "rgba("+col[0]+","+col[1]+","+col[2]+","+col[3]+")";
 									

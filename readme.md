@@ -19,6 +19,7 @@ It's life-changing: (if your life is especially boring)
 * Visiblity control of layers
 * Uses the [jQuery Templating plugin](http://github.com/jquery/jquery-tmpl)
 * Uses [Raphael](http://raphaeljs.com/)
+* REQUIRES ArcGIS 10 and the latest jsapi api from ESRI.
 
 
 Quick Start: Example Apps You Can Use
