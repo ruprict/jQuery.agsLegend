@@ -22,7 +22,11 @@
 				 		if (layId=="layer0")
 				 			return;
 				 		var lay = map.getLayer(layId);
-				 		
+				 		if (/ImageServer/.test(lay.url))
+				 		{
+				 			lay.setVisibility(visible);
+				 		}
+				 		else
 				 		$.each(lay.layerInfos, function(ind, lInfo){
 				 			
 				 			if (lInfo.name.replace(/\s/g,"_")==nm){
@@ -61,6 +65,7 @@
 				});
 				return this;
 			},
+			
 			makeCollapsible:function(wid){
 				$(">li>h3", wid).live("click",function(){
 					$(this).next().slideToggle('slow');
@@ -79,15 +84,36 @@
 				  }
 				}	
 			},
+			
 			addLayer:function(layer){
 				var $this = $(this)
 				var layerInd= layer.layerIndex;
 				if (layer.id=="layer0")
 					return;
-				$.getJSON(layer.url+"/layers?f=json&callback=?",
+				var url = (/ImageServer/.test(layer.url)) ? layer.url:layer.url+"/layers";
+				url += "?f=json&callback=?";
+				$.getJSON(url,
 					function(data){
-						
-						$("#layerTemplate").tmpl(data.layers,
+						if ('serviceDataType' in data){
+							//Image Service
+							$("#imageServiceTemplate").tmpl(data,
+								{
+									getChecked:function()
+									{
+										return (this.data.defaultVisibility) ? "checked":"";
+									},
+									getCheckboxID:function(){
+										if (this.data.name==null)
+											return "na";
+										return this.data.name.replace(/\s/g ,"_") +"_toggle";
+									}
+								}
+								
+								
+							).appendTo($this);
+						}						
+						else 
+							$("#layerTemplate").tmpl(data.layers,
 							{
 								
 								drawCircle: function(){
