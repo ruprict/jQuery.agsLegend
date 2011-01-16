@@ -51,6 +51,7 @@ I dunno, maybe.  There is a lot to be done, like:
 * I haven't even thought about group layers yet
 * Break up templates.txt into separate files for layer types
 * Clean up template loading, big time
+* Unit tests (I mean, c'mon, man.)
 
 Feel free to clone it and add stuff and issue a pull request.
 
