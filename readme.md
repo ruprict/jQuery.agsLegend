@@ -48,8 +48,9 @@ Are You Gonna Do Anything Else With It?
 I dunno, maybe.  There is a lot to be done, like:
 
 * Support all symbols and layer types
-* Make the layers collapsible (think tree view)
 * I haven't even thought about group layers yet
+* Break up templates.txt into separate files for layer types
+* Clean up template loading, big time
 
 Feel free to clone it and add stuff and issue a pull request.
 
