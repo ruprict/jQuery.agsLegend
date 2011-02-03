@@ -17,14 +17,14 @@
 				width:20%;
 			}
 			h3.agsLegendClosed{
-				background-image:url("jQuery.agsLegend/collapsible_arrow.png");
+				background-image:url("collapsible_arrow.png");
 				background-repeat: no-repeat;
 				background-position: 90% center;
 				
 			}
 			h3.agsLegendOpen{
 				
-				background-image:url("jQuery.agsLegend/collapsible_arrow_down.png");
+				background-image:url("collapsible_arrow_down.png");
 				background-repeat: no-repeat;
 				background-position: 90% center;
 			}
@@ -39,35 +39,14 @@
 			</div>
 			<div id="content"></div>
 		</div>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js" type="text/javascript"></script>
 		<script src="lib/jquery.tmpl.js" type="text/javascript" charset="utf-8"></script>
 		<script src="lib/raphael-min.js" type="text/javascript" charset="utf-8"></script>
 		<!-- ArcGIS API for JavaScript -->
-		<script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.0compact"></script>
+		<script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.0"></script>
 		<script src="jquery.agsLegend.js" type="text/javascript" charset="utf-8"></script> 
 		
-		<script defer>
-				var map, basemapUrl, url1, url2, url3, legend;
-				basemapUrl = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
-				url1 = 'http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Hydrography/Watershed173811/MapServer';
-				url2="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Fire/Sheep/MapServer";
-		 		url3="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Earthquakes/EarthquakesFromLastSevenDays/MapServer";
-				dojo.addOnLoad(function(){
-					 var initialExtent = new esri.geometry.Extent({"xmin":-10753431.069899248,"ymin":4624151.391548632,"xmax":-10737799.697614951,"ymax":4635884.47539039,"spatialReference":{"wkid":102100}});
-					map = new esri.Map("content", {extent:initialExtent});
-					legend = new $("#toc").agsLegend({map:map});
-                                        $.ajax({url:"templates.txt",success:function(data){
-                                          var script = document.createElement("script");
-                                          script.type="text/x-jquery-tmpl";
-                                          script.id="layerTemplate";
-                                          script.innerHTML=data;
-                                          $('head').append(script);
-                                      }});
-					map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(basemapUrl));
-					map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url1));
-					
-				});
-			</script>
+               <script src="demo.js" type="text/javascript"></script>
 		
 	</body>
 </html>
