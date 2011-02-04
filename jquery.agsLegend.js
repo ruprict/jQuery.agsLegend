@@ -11,7 +11,7 @@
       try{
         $this = $(this);
         map = opts.map;
-        dojo.connect(map,'onLayerAdd', dojo.hitch(this, addLayer));
+        dojo.connect(map,'onLayerAdd', addLayer);
         log("listener added");
         $this.delegate("input[type='checkbox']", "click", checkLayerVisibility);
         log("returning");
@@ -52,11 +52,14 @@
       });
     };
     function isImageService(layer){
-      return /ImageServer/.test(layer.url);
+      return /ImageServer/i.test(layer.url);
     };
     function isTiledService(layer){
       return layer.tileInfo;
     };
+    function isFeatureService(layer){
+      return /FeatureServer/i.test(layer.url);
+    }
     //Dynamic service visiblity is tre different
     function setVisibilityForDynamicService(layer,ind,visible){
       var visibleLayers = layer.visibleLayers;
@@ -84,101 +87,112 @@
       }
     };
 
+    function handleFeatureService(layer){
+      //Loop over each layer and issue rendering info request
+      var url = layer.url;
+      $.each(layer.layerInfos, function(ind,layerInfo){
+         getLayerRenderingInfo(url+"/"+layerInfo.id);
+      });
+    }
     function addLayer(layer){
       log("addLayer: "+ layer.id)
-      var $this = $(this);
-      var layerInd= layer.layerIndex;
+      var $this = $(this), layerInd= layer.layerIndex, url;
       if (layer.id=="layer0")
         return;
+      //If it's a FeatureServer, we have to go get each layer
       //ImageServers are different
-      var url = isImageService(layer) ? layer.url:layer.url+"/layers";
+      url = layer.url;
+      if (!isImageService(layer) && !isFeatureService(layer)) 
+        url +="/layers" 
+      getLayerRenderingInfo(url);
+    };
+    
+    function getLayerRenderingInfo(url){
       url += "?f=json&callback=?";
-      $.getJSON(url,
-        function(data){
-          if ('serviceDataType' in data){
-            //Image Service
-            $("#imageServiceTemplate").tmpl(data,
-              {
-                getChecked:function()
-                {
-                  return (this.data.defaultVisibility) ? "checked":"";
-                },
-                getCheckboxID:function()
-                {
-                if (this.data.name==null)
-                  return "na";
-                return this.data.name.replace(/\s/g ,"_") +"_toggle";
-              }
-            }).appendTo($this);
-          }						
-          else 
-            $("#layerTemplate").tmpl(data.layers,
+      $.getJSON(url, addLayerToTOC);
+    };
+
+    function addLayerToTOC(data){
+        if ('serviceDataType' in data){
+          //Image Service
+          $("#imageServiceTemplate").tmpl(data,
             {
-              drawCircle: function(){
-                var symId = this.data.name.replace(/\s+/g,"_");
-                var sym=this.data.drawingInfo.renderer.symbol;
-                var col = sym.color;
-                var li = $('<li><div style="float:left" id="symbol_'+symId+'"></div></li>').attr("id",symId).appendTo("#toc");
-                var span = '<span id="label_'+symId+'">'+this.data.name+'</span>';
-                var size = sym.size+10 ;
-                var paper = Raphael('symbol_'+symId,30, size);
-                var c =paper.circle(20,size/2,size-10);
-                var fill = "rgba("+col[0]+","+col[1]+","+col[2]+","+col[3]+")";
-
-                var outCol = sym.outline.color;
-                var stroke =  "rgba("+outCol[0]+","+outCol[1]+","+outCol[2]+","+outCol[3]+")";
-
-                c.attr({
-                  "fill":fill,
-                  "stroke":stroke,
-                  "stroke-width":sym.outline.width
-                });
-                $("#symbol_"+symId).append(span);
-                var html= $(li).html();
-                li.remove();
-                return html;
-              },
-              getColor:function(col){
-                var prefix = ($.support.opacity)?"rgba":"rgb";
-                var color = (!$.support.opacity)? col[0]+","+col[1]+","+col[2] : col[0]+","+col[1]+","+col[2]+","+col[3];
-                return  prefix+"("+color+")";
-              },
-              getBorder: function(outline){
-                var col = outline.color;
-                if (outline.width==0)
-                  return 'none';
-                var width = (outline.width<1) ? 1 : outline.width;
-                var prefix = ($.support.opacity)?"rgba":"rgb";
-                var color = (!$.support.opacity)? col[0]+","+col[1]+","+col[2] : col[0]+","+col[1]+","+col[2]+","+col[3];
-                return width+"px solid "+ prefix+"("+color+")";
-              }, 
-              getChecked:function(){
-                return (this.data.defaultVisibility) ? "checked":"";
-              },
-              getCheckboxID:function(){
-                if (this.data.name==null)
-                  return "na";
-                return this.data.name.replace(/\s/g ,"_") +"_toggle";
-              }
+              getChecked:getChecked,
+              getCheckboxID:getCheckboxID,            
             }).appendTo($this);
-          }
-        );
+        }
+        else 
+          $("#layerTemplate").tmpl((data.layers || data),
+          {
+            drawCircle: function(){
+              var symId = this.data.name.replace(/\s+/g,"_");
+              var sym=this.data.drawingInfo.renderer.symbol;
+              var col = sym.color;
+              var li = $('<li><div style="float:left" id="symbol_'+symId+'"></div></li>').attr("id",symId).appendTo("#toc");
+              var span = '<span id="label_'+symId+'">'+this.data.name+'</span>';
+              var size = sym.size+10 ;
+              var paper = Raphael('symbol_'+symId,30, size);
+              var c =paper.circle(20,size/2,size-10);
+              var fill = "rgba("+col[0]+","+col[1]+","+col[2]+","+col[3]+")";
+
+              var outCol = sym.outline.color;
+              var stroke =  "rgba("+outCol[0]+","+outCol[1]+","+outCol[2]+","+outCol[3]+")";
+
+              c.attr({
+                "fill":fill,
+                "stroke":stroke,
+                "stroke-width":sym.outline.width
+              });
+              $("#symbol_"+symId).append(span);
+              var html= $(li).html();
+              li.remove();
+              return html;
+            },
+            getColor:function(col){
+              var prefix = ($.support.opacity)?"rgba":"rgb";
+              var color = (!$.support.opacity)? col[0]+","+col[1]+","+col[2] : col[0]+","+col[1]+","+col[2]+","+col[3];
+              return  prefix+"("+color+")";
+            },
+            getBorder: function(outline){
+              var col = outline.color;
+              if (outline.width==0)
+                return 'none';
+              var width = (outline.width<1) ? 1 : outline.width;
+              var prefix = ($.support.opacity)?"rgba":"rgb";
+              var color = (!$.support.opacity)? col[0]+","+col[1]+","+col[2] : col[0]+","+col[1]+","+col[2]+","+col[3];
+              return width+"px solid "+ prefix+"("+color+")";
+            }, 
+            getChecked: getChecked,
+            getCheckboxID:function(){
+              if (this.data.name==null)
+                return "na";
+              return this.data.name.replace(/\s/g ,"_") +"_toggle";
+            }
+          }).appendTo($this);
+        }
+      function getChecked(){
+        return (this.data.defaultVisibility) ? "checked":"";
       };
+      function getCheckboxID(){
+        if (this.data.name==null)
+          return "na";
+        return this.data.name.replace(/\s/g ,"_") +"_toggle";
+      };
+
+
       function checkLayerVisibility(ev){
         // We'll find the layer based on the name, so capture it
         var nm = /([a-zA-Z0-9_]*)_toggle/.exec(this.id)[1];
         var visible = $(this).attr("checked");
-
+        var combindedLayerIds = $.merge([],map.layerIds);
+        $.merge(combindedLayerIds, map.graphicsLayerIds);
         // Loop over each layer, and get to work
-        $.each(map.layerIds, function(ind, layId){
+        $.each(combindedLayerIds, function(ind, layId){
           if (layId=="layer0" && opts.ignoreBasemaps)
             return;
           var lay = map.getLayer(layId);
-          if (isImageService(lay))
-          {
-            lay.setVisibility(visible);
-          }
-          else 
+
+          if (lay.layerInfos)
           {
             $.each(lay.layerInfos, function(ind, lInfo){
                 if (lInfo.name.replace(/\s/g,"_")==nm){
@@ -191,6 +205,12 @@
                 }
               }
             });
+          }
+          else 
+          {
+            if (lay.name.replace(/\s/g,"_")==nm){
+              lay.setVisibility(visible);
+            }
           }
         });					
       };
