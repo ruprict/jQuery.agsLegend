@@ -215,15 +215,8 @@
         });					
       };
         
-    //Generate the color for the widget based on what the browser supports
-    $.fn.agsLegend.getColor=function(col){
-      var prefix = ($.support.opacity)?"rgba":"rgb";
-      var color = (!$.support.opacity)? col[0]+","+col[1]+","+col[2] : col[0]+","+col[1]+","+col[2]+","+col[3];
-      log("returning "+prefix+"("+color+")");
-
-      return prefix+"("+color+")";
-    };
  }   
+
  $.fn.agsLegend.defaults = {
       ignoreBasemaps:true,
       autoLoadTemplates: false,

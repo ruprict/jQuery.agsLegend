@@ -26,6 +26,7 @@ var esiDemo ={};
           mode: esri.layers.FeatureLayer.MODE_SNAPSHOT,
           outFields: ["*"]
         }));
+      map.addLayer(new esri.layers.ArcGISImageServiceLayer(url4));
       
     });
     map.addLayer(basemap);
