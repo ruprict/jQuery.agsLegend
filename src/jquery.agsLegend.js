@@ -109,7 +109,7 @@
     };
 
     function addLayerToTOC(data){
-      if ('serviceDataType' in data){
+      /*if ('serviceDataType' in data){
         //Image Service
         $("#imageServiceTemplate").tmpl(data,
           {
@@ -117,7 +117,7 @@
             getCheckboxID:_getCheckboxID,            
           }).appendTo($this);
       }
-      else 
+      else */
         $("#layerTemplate").tmpl((data.layers || data),
         {
           drawCircle: _drawCircle ,
@@ -153,23 +153,25 @@
       // Raphael canvas and the circle rendered
       function _drawCircle(){
         var symId = this.data.name.replace(/\s+/g,"_");
-        var li = '<div style="float:left" id="symbol_'+symId+'"><span id="label_'+symId+'">'+this.data.name+'</span></div>';
+        var widgetID = "symbol_"+symId;
+        var li = '<div style="float:left" id="'+widgetID+'"><span id="label_'+symId+'">'+this.data.name+'</span></div>';
         var sym=this.data.drawingInfo.renderer.symbol;
         var col = sym.color;
         var size = sym.size+10 ;
-        $('#symbol_'+symId).livequery(function(evt){
+        $('#'+widgetID).livequery(function(evt){
           console.dir(evt);
-             var paper = Raphael('symbol_'+symId,30, size);
-              var c =paper.circle(20,size/2,size-10);
-              var fill = "rgba("+col[0]+","+col[1]+","+col[2]+","+col[3]+")";
+          $('#'+widgetID).expire();
+          var paper = Raphael('symbol_'+symId,30, size);
+          var c =paper.circle(20,size/2,size-10);
+          var fill = "rgba("+col[0]+","+col[1]+","+col[2]+","+col[3]+")";
 
-              var outCol = sym.outline.color;
-            var stroke =  "rgba("+outCol[0]+","+outCol[1]+","+outCol[2]+","+outCol[3]+")";
-             c.attr({
-              "fill":fill,
-              "stroke":stroke,
-              "stroke-width":sym.outline.width
-            });
+          var outCol = sym.outline.color;
+          var stroke =  "rgba("+outCol[0]+","+outCol[1]+","+outCol[2]+","+outCol[3]+")";
+          c.attr({
+            "fill":fill,
+            "stroke":stroke,
+            "stroke-width":sym.outline.width
+          });
         });
         return li;
       };

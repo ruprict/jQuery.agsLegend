@@ -1,0 +1,51 @@
+html, body { 
+                    height: 100%; 
+                    width: 100%; 
+                    margin: 0; 
+                    padding: 0; 
+                    overflow:hidden;
+                    background:#4e290f url(images/i_am_legend07.jpg) no-repeat center top;
+                    color: #f1db6c !important;
+                  }
+                
+                    header h1{
+                      margin-left:5px;
+                      font-family:serif;
+                      font-size:28px;
+                      margin:5px 5px !important
+                    }
+			ul{
+				list-style-type:none;
+                              }
+                        #container{
+                          height:100%;
+                        }
+			.map{
+                          margin-left:20%;
+                          position:relative;
+                          height:100%;
+                          width;80%;
+                          margin-right:5px
+                        }
+			#navbar{
+				float:left;
+                                width:20%;
+                                overflow-y:scroll;
+                                margin-left:5px;
+                                height:100%;
+			}
+                        #navbar ul{
+                          padding-left:10px;
+                        }
+			h3.agsLegendClosed{
+				background-image:url("collapsible_arrow.png");
+				background-repeat: no-repeat;
+				background-position: 90% center;
+				
+			}
+			h3.agsLegendOpen{
+				
+				background-image:url("collapsible_arrow_down.png");
+				background-repeat: no-repeat;
+				background-position: 90% center;
+			}

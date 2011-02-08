@@ -1,6 +1,21 @@
                 <li><input type="checkbox" style="float:left" id="${$item.getCheckboxID()}" checked="${$item.getChecked()}" />
                 <h3 class="agsLegendOpen" style="margin:0 0 0 25px;padding:0;" >${name} </h3>
-                {{if drawingInfo.renderer.type=="simple"}}
+                {{if serviceDataType}}
+                  {{if serviceDataType=='esriImageServiceDataTypeRGB'}}
+                    <ul>
+                      <li>
+                       <div style="display:table-cell;width:25px;height:15px;background-color:#F00;border:thin solid #DDD;margin-right:5px;float:left"></div> <span>Red</span>
+                      </li>
+                       <li>
+                       <div style="display:table-cell;width:25px;height:15px;background-color:#0F0;border:thin solid #DDD;margin-right:5px;float:left"></div> <span>Green</span>
+                      </li>
+                      <li>
+                       <div style="display:table-cell;width:25px;height:15px;background-color:#00F;border:thin solid #DDD;margin-right:5px;float:left"></div><span>Blue</span>
+                      </li>
+
+                    </ul>
+                  {{/if}}
+                {{else drawingInfo.renderer.type=="simple"}}
                         
                         {{if drawingInfo.renderer.symbol.type=='esriPMS'}}
                                 <div style="display:table; margin:10px 5px;" >
@@ -48,7 +63,10 @@
                                 {{/if}}
                         {{/each}}
                         </ul>
+                {{else serviceDataType=='esriImageServiceDataTypeRGB'}}
+                 
                 {{/if}}
+                
                 </li>
     <div style="clear:both"/>
 
