@@ -19,8 +19,12 @@ describe("jQuery.agsLegend", function() {
   });
   it("should change the templateURL if its' passed", function() {
     spyOn($,"ajax");
-    legend = $('#target').agsLegend({map:map,autoLoadTemplates:true, templateFileURL:"othertemplates.txt",onTemplateLoaded:function(data){}});
-    expect($.ajax).toHaveBeenCalledWith([{url:"othertemplates.txt",success:Function}]);
+    var callback = function(){};
+    legend = $('#target').agsLegend({map:map,autoLoadTemplates:true, templateFileURL:"othertemplates.txt",onTemplateLoaded:callback});
+    expect($.ajax).toHaveBeenCalledWith({
+          url:"othertemplates.txt",
+          success:callback
+       });
   });
 
 /*

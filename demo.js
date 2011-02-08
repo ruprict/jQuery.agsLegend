@@ -13,7 +13,7 @@ var esiDemo ={};
 
   var initialExtent = new esri.geometry.Extent({"xmin":-10753431.069899248,"ymin":4624151.391548632,"xmax":-10737799.697614951,"ymax":4635884.47539039,"spatialReference":{"wkid":102100}});
   THIS.load = function(){
-    map = new esri.Map("content", {extent:initialExtent});
+    map = new esri.Map("map", {extent:initialExtent});
     console.log("map created");
     var basemap=new esri.layers.ArcGISTiledMapServiceLayer(basemapUrl);
     dojo.connect(basemap, 'onLoad', function(l){
@@ -32,7 +32,20 @@ var esiDemo ={};
     map.addLayer(basemap);
 
   };
-  
+//resize stuff
+  try{
+   var resizeTimer;
+   $(window).resize(function(evt){
+   		console.log("reszing");
+	   clearTimeout(resizeTimer);
+	    resizeTimer = setTimeout( function() {
+	      map.resize();
+	      map.reposition();
+	    }, 500);
+	});
+  } catch (e){
+    _log(e.message);
+  } 
   
 }).apply(esiDemo);
 dojo.addOnLoad(esiDemo.load);
