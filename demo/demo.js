@@ -19,6 +19,7 @@ var esiDemo ={};
     dojo.connect(basemap, 'onLoad', function(l){
       THIS.legend = $("#toc").agsLegend({map:map,autoLoadTemplates: true});
 
+      map.addLayer(new esri.layers.ArcGISImageServiceLayer(url4));
       map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url1));
       map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url3));
       map.addLayer(new esri.layers.FeatureLayer(url5,
@@ -26,12 +27,23 @@ var esiDemo ={};
           mode: esri.layers.FeatureLayer.MODE_SNAPSHOT,
           outFields: ["*"]
         }));
-      map.addLayer(new esri.layers.ArcGISImageServiceLayer(url4));
       
     });
     map.addLayer(basemap);
+    
+    bindAjaxEvents();
 
   };
+
+  function bindAjaxEvents(){
+    $("#loading").bind({
+      ajaxStart: function() {
+                   $( this ).show();
+                 },
+      ajaxStop: function() {$( this ).hide();}
+    });
+  };
+
 //resize stuff
   try{
    var resizeTimer;
