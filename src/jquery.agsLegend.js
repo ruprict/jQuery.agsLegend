@@ -96,6 +96,9 @@ var i;
     // input is an array of color numbers i.e., [255,255,255,0]
     // Example return value is rgba(255,255,255,0)
     function getColor(col) {
+        if (col===null){
+          col = [0,0,0,0];
+        }
         var prefix = ($.support.opacity) ? "rgba" : "rgb",
             color = (!$.support.opacity) ? col[0] + "," + col[1] + "," + col[2] : col[0] + "," + col[1] + "," + col[2] + "," + col[3];
         return prefix + "(" + color + ")";
@@ -107,11 +110,8 @@ var i;
         if (outline.width === 0) {
             return 'none';
         }
-        var col = outline.color,
-            width = (outline.width < 1) ? 1 : outline.width,
-            prefix = ($.support.opacity) ? "rgba" : "rgb",
-            color = (!$.support.opacity) ? col[0] + "," + col[1] + "," + col[2] : col[0] + "," + col[1] + "," + col[2] + "," + col[3];
-        return width + "px solid " + prefix + "(" + color + ")";
+        var width = (outline.width < 1) ? 1 : outline.width;
+        return width + "px solid " + getColor(outline.color);
     }
 
     // Return true/false based on default Visibility
@@ -148,7 +148,7 @@ var i;
     function addLayer(layer) {
         log("addLayer: " + layer.id);
         var $this = $(this), url;
-        if (layer.id === "layer0") {
+        if (layer.id === "layer0" && opts.ignoreBasemaps) {
             return;
         }
         //If it's a FeatureServer, we have to go get each layer

@@ -10,6 +10,7 @@ var esiDemo ={};
   url3="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Earthquakes/EarthquakesFromLastSevenDays/MapServer"
   url4="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/World/Temperature/ImageServer";
   url5="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Fire/Sheep/FeatureServer/0";
+  url6 = "http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer";
 
   var initialExtent = new esri.geometry.Extent({"xmin":-10753431.069899248,"ymin":4624151.391548632,"xmax":-10737799.697614951,"ymax":4635884.47539039,"spatialReference":{"wkid":102100}});
   THIS.load = function(){
@@ -20,6 +21,7 @@ var esiDemo ={};
       THIS.legend = $("#toc").agsLegend({map:map,autoLoadTemplates: true});
 
       map.addLayer(new esri.layers.ArcGISImageServiceLayer(url4));
+      map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(url6));
       map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url1));
       map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url3));
       map.addLayer(new esri.layers.FeatureLayer(url5,

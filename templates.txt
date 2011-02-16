@@ -63,7 +63,6 @@
                                 {{/if}}
                         {{/each}}
                         </ul>
-                {{else serviceDataType=='esriImageServiceDataTypeRGB'}}
                  
                 {{/if}}
                 
