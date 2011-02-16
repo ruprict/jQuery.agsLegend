@@ -137,7 +137,7 @@ var i;
                 getBorder:  getBorder,
                 getChecked: getChecked,
                 getCheckboxID: getCheckboxID
-            }).appendTo($this);
+            }).prependTo($this);
     }
 
     function getLayerRenderingInfo(url) {
@@ -159,10 +159,6 @@ var i;
         }
         getLayerRenderingInfo(url);
     }
-
-      
-    
-      
     
     // Handle the visiblity toggle click event
     function checkLayerVisibility(ev) {
@@ -222,9 +218,6 @@ var i;
                 log("ERROR: " + ex.messsage);
             }
         });
-     
-        
-           
     };   
 
     $.fn.agsLegend.defaults = {
