@@ -14,24 +14,24 @@ var esiDemo ={};
 
   var initialExtent = new esri.geometry.Extent({"xmin":-10753431.069899248,"ymin":4624151.391548632,"xmax":-10737799.697614951,"ymax":4635884.47539039,"spatialReference":{"wkid":102100}});
   THIS.load = function(){
-    map = new esri.Map("map", {extent:initialExtent});
+    THIS.map = new esri.Map("map", {extent:initialExtent});
     console.log("map created");
     var basemap=new esri.layers.ArcGISTiledMapServiceLayer(basemapUrl);
     dojo.connect(basemap, 'onLoad', function(l){
-      THIS.legend = $("#toc").agsLegend({map:map,autoLoadTemplates: true});
+      THIS.legend = $("#toc").agsLegend({map:THIS.map,autoLoadTemplates: true});
 
-      map.addLayer(new esri.layers.ArcGISImageServiceLayer(url4));
-      map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(url6));
-      map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url1));
-      map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url3));
-      map.addLayer(new esri.layers.FeatureLayer(url5,
+      THIS.map.addLayer(new esri.layers.ArcGISImageServiceLayer(url4));
+      THIS.map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(url6));
+      THIS.map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url1));
+      THIS.map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer(url3));
+      THIS.map.addLayer(new esri.layers.FeatureLayer(url5,
       {
           mode: esri.layers.FeatureLayer.MODE_SNAPSHOT,
           outFields: ["*"]
         }));
       
     });
-    map.addLayer(basemap);
+    THIS.map.addLayer(basemap);
     
     bindAjaxEvents();
 

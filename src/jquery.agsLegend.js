@@ -14,7 +14,7 @@ var i;
         script = document.createElement("script");
         script.style.display = "none";
         script.type = "text/x-jquery-tmpl";
-        script.id = "layerTemplate";
+        script.id = opts.templateDOMId;
         script.text = data;
         $('head').append(script);
     }
@@ -130,7 +130,7 @@ var i;
     }
 
     function addLayerToTOC(data) {
-        $("#layerTemplate").tmpl((data.layers || data),
+        $("#"+opts.templateDOMId).tmpl((data.layers || data),
             {
                 drawCircle: drawCircle,
                 getColor: getColor,
@@ -225,7 +225,8 @@ var i;
         autoLoadTemplates: false,
         templateFileURL: "templates.txt",
         onTemplateLoaded: null,
-        isCollapsible: true
+        isCollapsible: true,
+        templateDOMId: "layerTemplate"
     };
   
 }(jQuery));
