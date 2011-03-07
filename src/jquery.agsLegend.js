@@ -69,11 +69,11 @@ var i;
    // Draw a circle using Raphael
     // The return value is an HTML list item (<li>) with the 
     // Raphael canvas and the circle rendered
-    function drawCircle() {
-        var symId = this.data.name.replace(/\s+/g, "_"),
+    function drawCircle(item) {
+        var symId = item.name.replace(/\s+/g, "_"),
             widgetID = "symbol_" + symId,
-            li = '<div style="float:left" id="' + widgetID + '"><span id="label_' + symId + '">' + this.data.name + '</span></div>',
-            sym = this.data.drawingInfo.renderer.symbol,
+            li = '<div style="float:left" id="' + widgetID + '"><span id="label_' + symId + '">' + item.name + '</span></div>',
+            sym = item.drawingInfo.renderer.symbol,
             col = sym.color,
             size = sym.size + 10;
         $('#' + widgetID).livequery(function (evt) {
@@ -123,14 +123,14 @@ var i;
     // appends "_toggle" to the layer name, replacing all spaces with 
     // underscores
     function getCheckboxID() {
-        if (this.data.name === null) {
-            return "na";
-        }
-        return this.data.name.replace(/\s/g, "_") + "_toggle";
+      var name = this.serviceName();
+      if (name === undefined)
+        return "na";
+      return name.replace(/\s/g, "_") + "_toggle";
     }
 
     function addLayerToTOC(data) {
-        $("#"+opts.templateDOMId).tmpl((data.layers || data),
+        $("#"+opts.templateDOMId).tmpl((data),
             {
                 drawCircle: drawCircle,
                 getColor: getColor,
@@ -140,9 +140,24 @@ var i;
             }).prependTo($this);
     }
 
-    function getLayerRenderingInfo(url) {
+    function getServiceNameFromURL(url) {
+      var name = /([a-z_0-9-]*)\/(FeatureServer|ImageServer|MapServer)/i.exec(url)
+      return  name[1];
+    }
+    function getLayerRenderingInfo(url,layer) {
         url += "?f=json&callback=?";
-        $.getJSON(url, addLayerToTOC);
+        $.getJSON(url, function(data) {
+            $("#"+opts.templateDOMId).tmpl(data,
+                {
+                    drawCircle: drawCircle,
+                    getColor: getColor,
+                    getBorder:  getBorder,
+                    getChecked: getChecked,
+                    getCheckboxID: getCheckboxID,
+                    isTiled: function(){return layer.hasOwnProperty("tileInfo");},
+                    serviceName: function() { return getServiceNameFromURL(layer.url);}
+                }).prependTo($this);
+        });
     }
     
     function addLayer(layer) {
@@ -154,16 +169,19 @@ var i;
         //If it's a FeatureServer, we have to go get each layer
         //ImageServers are different
         url = layer.url;
-        if (!isImageService(layer) && !isFeatureService(layer)) {
+        if (layer.version > 10.0) {
+          url += "/legend";
+        }
+        else if (!isImageService(layer) && !isFeatureService(layer)) {
             url += "/layers";
         }
-        getLayerRenderingInfo(url);
+        getLayerRenderingInfo(url,layer);
     }
     
     // Handle the visiblity toggle click event
     function checkLayerVisibility(ev) {
         // We'll find the layer based on the name, so capture it
-        var nm = (/([a-zA-Z0-9_]*)_toggle/).exec(this.id)[1],
+        var nm = (/([a-zA-Z0-9_-]*)_toggle/).exec(this.id)[1],
             visible = $(this).attr("checked"),
             // Combine layerIds and graphiclaeyrIds (featurelayers use the latter)
             combindedLayerIds = $.merge([], map.layerIds),
@@ -191,7 +209,7 @@ var i;
                     }
                 });
             } else {
-                // We're either an ImageService or a GraphicsLayer
+                // We're either an ImageService or a GraphicsLayhttp://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_1990-2000_Population_Change/MapServerer
                 if (lay.name.replace(/\s/g, "_") === nm) {
                     lay.setVisibility(visible);
                 }
@@ -209,8 +227,11 @@ var i;
             try {
                 $this = $(this);
                 map = opts.map;
-                dojo.connect(map, 'onLayerAdd', addLayer);
-                $this.delegate("input[type='checkbox']", "click", checkLayerVisibility);
+                dojo.connect(map, 'onLayerAdd', addLayer);http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer
+                $this.delegate("input[type='checkbox']", "click", checkLayerVisibility);function getServiceNameFromURL(url) {
+        return /([a-zA-Z_0-9\-]*)\/MapServer|GPServer|FeatureServer|ImageServer/.exec(layer.url)[1];
+    }
+
                 if (opts.isCollapsible) { makeCollapsible(this); }
                 log("Successfully initialized");
         
@@ -242,4 +263,3 @@ if (!Array.indexOf) {
         return -1;
     };
 }	
-
