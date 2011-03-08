@@ -155,7 +155,7 @@ var i;
                     getChecked: getChecked,
                     getCheckboxID: getCheckboxID,
                     isTiled: function(){return layer.hasOwnProperty("tileInfo");},
-                    serviceName: function() { return getServiceNameFromURL(layer.url);}
+                    serviceName: function() { return (getServiceNameFromURL(layer.url));}
                 }).prependTo($this);
         });
     }
@@ -194,7 +194,11 @@ var i;
                 return;
             }
             lay = map.getLayer(layId);
-
+            if (getServiceNameFromURL(lay.url)==nm){
+              lay.setVisibility(visible); 
+            }
+            return;
+            //TODO:Get dynamic layers working (will have to change template)
             if (lay.layerInfos) {
                 // We're either tiled or dynamic
                 $.each(lay.layerInfos, function (ind, lInfo) {
@@ -209,8 +213,8 @@ var i;
                     }
                 });
             } else {
-                // We're either an ImageService or a GraphicsLayhttp://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_1990-2000_Population_Change/MapServerer
-                if (lay.name.replace(/\s/g, "_") === nm) {
+                // We're either an ImageService or a GraphicsLayer
+                 if (lay.name.replace(/\s/g, "_") === nm) {
                     lay.setVisibility(visible);
                 }
             }
@@ -227,10 +231,8 @@ var i;
             try {
                 $this = $(this);
                 map = opts.map;
-                dojo.connect(map, 'onLayerAdd', addLayer);http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer
-                $this.delegate("input[type='checkbox']", "click", checkLayerVisibility);function getServiceNameFromURL(url) {
-        return /([a-zA-Z_0-9\-]*)\/MapServer|GPServer|FeatureServer|ImageServer/.exec(layer.url)[1];
-    }
+                dojo.connect(map, 'onLayerAdd', addLayer);
+                $this.delegate("input[type='checkbox']", "click", checkLayerVisibility);    
 
                 if (opts.isCollapsible) { makeCollapsible(this); }
                 log("Successfully initialized");
