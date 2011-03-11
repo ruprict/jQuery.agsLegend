@@ -124,8 +124,9 @@ var i;
     // underscores
     function getCheckboxID() {
       var name = this.serviceName();
-      if (name === undefined)
+      if (name === undefined) {
         return "na";
+      }
       return name.replace(/\s/g, "_") + "_toggle";
     }
 
@@ -194,7 +195,7 @@ var i;
                 return;
             }
             lay = map.getLayer(layId);
-            if (getServiceNameFromURL(lay.url)==nm){
+            if (getServiceNameFromURL(lay.url) === nm){
               lay.setVisibility(visible); 
             }
             return;
