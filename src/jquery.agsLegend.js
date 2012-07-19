@@ -146,7 +146,10 @@ var i;
       return  name[1];
     }
     function getLayerRenderingInfo(url,layer) {
-        url += "?f=json&callback=?";
+        if(url.indexOf("?") == -1)
+            url += "?";
+
+        url += "&f=json&callback=?"
         $.getJSON(url, function(data) {
             $("#"+opts.templateDOMId).tmpl(data,
                 {
@@ -160,7 +163,7 @@ var i;
                 }).prependTo($this);
         });
     }
-    
+        
     function addLayer(layer) {
         log("addLayer: " + layer.id);
         var $this = $(this), url;
@@ -170,12 +173,20 @@ var i;
         //If it's a FeatureServer, we have to go get each layer
         //ImageServers are different
         url = layer.url;
+        var urlParameters;
+        var urlParameterIndex = url.indexOf("?");
+        if(urlParameterIndex != -1){
+            urlParameters = url.substring(urlParameterIndex);
+            url = url.replace(urlParameters,'');
+        }
         if (layer.version > 10.0) {
           url += "/legend";
         }
         else if (!isImageService(layer) && !isFeatureService(layer)) {
             url += "/layers";
         }
+        if(urlParameters)
+            url += urlParameters;
         getLayerRenderingInfo(url,layer);
     }
     
